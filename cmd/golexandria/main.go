@@ -1,16 +1,16 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"github.com/thoj/go-ircevent"
+
+	irc "github.com/thoj/go-ircevent"
+	"github.com/voje/golexandria/internal/namesgenerator"
 )
 
 func main() {
-	namePtr := flag.String("name", "DefaultName", "Your name.")
-	flag.Parse()
-
-	fmt.Printf("My name is %s.\n", *namePtr)
+	username := namesgenerator.GenRandomName(3)
+	fmt.Println("My username is %v.", username)
+	return
 
 	server := "irc.undernet.org:6667"
 
