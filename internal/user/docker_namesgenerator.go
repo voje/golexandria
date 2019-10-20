@@ -1,11 +1,12 @@
-package namesgenerator // import "github.com/docker/docker/pkg/namesgenerator"
+package user
 
-// Importing the docker project as a go module is painful and heavy. 
-// Here's the file that generates names. 
+// Importing the docker project as a go module is painful and heavy.
+// Here's the file that generates names.
 
 import (
 	"fmt"
 	"math/rand"
+	"time"
 )
 
 var (
@@ -836,6 +837,7 @@ var (
 // formatted as "adjective_surname". For example 'focused_turing'. If retry is non-zero, a random
 // integer between 0 and 10 will be added to the end of the name, e.g `focused_turing3`
 func GetRandomName(retry int) string {
+	rand.Seed(time.Now().UnixNano())
 begin:
 	name := fmt.Sprintf("%s_%s", left[rand.Intn(len(left))], right[rand.Intn(len(right))])
 	if name == "boring_wozniak" /* Steve Wozniak is not boring */ {
