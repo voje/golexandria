@@ -4,8 +4,8 @@ package main
 //   - connect to server (todo: try different servers)
 //   - send msg
 //   - receive msg, mux channel, sender, msg content
-//   - receive file
 //   - send file
+//   - receive file
 
 import (
 	"bufio"
@@ -26,7 +26,8 @@ func main() {
 	// server := "irc.freenode.net:6667"
 
 	// server := "irc.undernet.org:6667"  // nope
-	server := "amsterdam.nl.eu.undernet.org:6667" // worked
+	// server := "amsterdam.nl.eu.undernet.org:6667" // worked
+	server := "localhost:6667"
 
 	channel := "#golexandria-test"
 	irccon := irc.IRC(ircnick, ircnick)
