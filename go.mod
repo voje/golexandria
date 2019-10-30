@@ -1,4 +1,4 @@
-module github.com/voje/golexandria/v2
+module github.com/voje/golexandria
 
 go 1.13
 
