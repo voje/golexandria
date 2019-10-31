@@ -26,9 +26,12 @@ func main() {
 	// server := "irc.freenode.net:6667"
 
 	// server := "irc.undernet.org:6667"  // nope
-	server := "amsterdam.nl.eu.undernet.org:6667" // worked
+	// server := "amsterdam.nl.eu.undernet.org:6667" // worked
 
-	channel := "#golexandria-test"
+	// my local server
+	server := "k-arch.example.com:6667"
+
+	channel := "#golexandria"
 	irccon := irc.IRC(ircnick, ircnick)
 	irccon.PingFreq = time.Second * 3
 
