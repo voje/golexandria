@@ -4,8 +4,8 @@ package main
 //   - connect to server (todo: try different servers)
 //   - send msg
 //   - receive msg, mux channel, sender, msg content
-//   - receive file
 //   - send file
+//   - receive file
 
 import (
 	"bufio"
@@ -27,9 +27,10 @@ func main() {
 
 	// server := "irc.undernet.org:6667"  // nope
 	// server := "amsterdam.nl.eu.undernet.org:6667" // worked
+	server := "localhost:6667"
 
 	// my local server
-	server := "k-arch.example.com:6667"
+	// server := "k-arch.example.com:6667"
 
 	channel := "#golexandria"
 	irccon := irc.IRC(ircnick, ircnick)
@@ -38,6 +39,12 @@ func main() {
 	irccon.AddCallback("001", func(e *irc.Event) {
 		irccon.Join(channel)
 		irccon.Privmsgf(channel, "Hello! Is anybody out there!?")
+
+		// Send CTCP message.
+		// irccon.Privmsgf(channel, "CTCP geryon VERSION")
+		irccon.Privmsg(channel, "\x01CTCP TIME\x01")
+		irccon.Privmsg(channel, "\x01CTCP PING\x01")
+		irccon.Privmsg("geryon", "\x01DCC SEND test.txt 2130706433 50200 2\x01")
 	})
 
 	/*
@@ -76,7 +83,19 @@ func main() {
 
 	irccon.AddCallback("PING", func(e *irc.Event) {
 		fmt.Printf("Oh my gosh! A PING!!! %v\n", e)
-		irccon.SendRaw("PONG test@test.com")
+		go irccon.SendRaw("PONG test@test.com")
+	})
+
+	irccon.AddCallback("CTCP_VERSION", func(e *irc.Event) {
+		fmt.Printf("CTCP_VERSION response: %v\n", e)
+	})
+
+	irccon.AddCallback("CTCP_TIME", func(e *irc.Event) {
+		fmt.Printf("CTCP_TIME response: %v\n", e)
+	})
+
+	irccon.AddCallback("CTCP_PING", func(e *irc.Event) {
+		fmt.Printf("CTCP_PING response: %v\n", e)
 	})
 
 	irccon.AddCallback("CTCP", func(e *irc.Event) {
@@ -89,7 +108,7 @@ func main() {
 		senderPort := msgSpl[4] // if port is 0
 		senderAddr := fmt.Sprintf("%v:%v", e.Host, senderPort)
 		fmt.Printf("Sender: %v\n", senderAddr)
-		tcpConn, err := net.Dial("tcp", senderAddr)
+		tcpConn, err := net.Dial("tcp6", senderAddr)
 		if err != nil {
 			fmt.Printf("%v\n", err)
 			panic(err)
@@ -125,4 +144,16 @@ func handlePrivateMsg(e *irc.Event, sender string) {
 		Private message :: Channel: goofy_morse || Nick: geryon || Message: SHA-256 checksum for Transferme.txt (remote): 7d9819c4648ddd6dd1192b2ff5294ae340549520f2eb77b97557ab1cb42c58d3
 	*/
 	fmt.Printf("Private message :: Channel: %s || Nick: %s || Message: %s\n", sender, e.Nick, e.Message())
+}
+
+/*
+func sendFile(irccon *irc.Connection, user string) {
+	// Create a file.
+	f1 := []byte("This is a test file\nnr: 913472\n")
+	irccon.CTC
+}
+*/
+
+func sendCTCP(c *irc.Connection, ctcpCommand string) {
+	c.SendRawf("%v\n", ctcpCommand)
 }
